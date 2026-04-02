@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.michelrubens.spring_demo.domain.User;
+import io.michelrubens.spring_demo.exceptions.ResourceNotFoundException;
 import io.michelrubens.spring_demo.service.HelloWorldService;
 
 @RestController
@@ -29,6 +30,9 @@ public class HelloWorldController {
   @PostMapping("/{id}")
   public String helloWorldPost(@PathVariable String id,
       @RequestParam(value = "filter", defaultValue = "") String filter, @RequestBody User body) {
+    if ("0".equals(id)) {
+      throw new ResourceNotFoundException("Usuário com ID 0 não foi encontrado no sistema.");
+    }
     return "Hello world " + body.getName() + " " + id + " " + filter;
   }
 
