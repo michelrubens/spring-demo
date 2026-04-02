@@ -10,6 +10,7 @@ O projeto implementa uma API REST básica que:
 2.  **Lógica de Negócio**: Utiliza a camada de serviço (`HelloWorldService`) para processar mensagens de saudação.
 3.  **Configuração de Beans**: Demonstra o uso de classes de configuração para definir beans gerenciados pelo Spring.
 4.  **Modelo de Dados**: Define uma entidade `User` para manipulação de dados em requisições POST.
+5.  **Tratamento de Exceções**: Implementa um manipulador global para gerenciar erros de forma centralizada (ex: 404 Not Found).
 
 ## Anotações do Spring Utilizadas
 
@@ -29,6 +30,10 @@ O Spring utiliza anotações para reduzir a configuração XML e gerenciar o cic
   - `@PathVariable`: Vincula variáveis da URL aos parâmetros do método.
   - `@RequestParam`: Extrai parâmetros de consulta (query params) da URL.
   - `@RequestBody`: Indica que o parâmetro do método deve ser vinculado ao corpo da requisição HTTP (usado para o objeto `User`).
+
+* **Tratamento de Erros**:
+  - `@RestControllerAdvice`: Define uma classe que captura exceções globalmente para todos os controllers.
+  - `@ExceptionHandler`: Mapeia um método para tratar uma exceção específica e definir a resposta enviada ao cliente.
 
 ## Anotações do Lombok Utilizadas
 
@@ -53,11 +58,23 @@ Para testar o endpoint POST, você deve enviar um JSON no corpo da requisição 
 ```bash
 curl -X POST http://localhost:8080/hello-world/123?filter=ativo \
      -H "Content-Type: application/json" \
-     -d '{"name": "Michel Rubens"}'
+     -d '{"name": "Michel"}'
 ```
 
 **Resposta esperada:**
 `Hello world Michel Rubens 123 ativo`
+
+### 3. Testar Not Found (404)
+
+Se você enviar o ID `0`, o sistema lançará uma `ResourceNotFoundException` tratada pelo manipulador global:
+
+```bash
+curl -X POST http://localhost:8080/hello-world/0 \
+     -H "Content-Type: application/json" \
+     -d '{"name": "Michel"}'
+```
+
+**Resposta esperada (Status 404):** `Usuário com este ID não foi encontrado no sistema.`
 
 ## Como Executar
 
